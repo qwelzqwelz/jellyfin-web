@@ -23,7 +23,7 @@ class Banner {
             // container inner image
             const image = document.createElement("img");
             image.setAttribute("src", url);
-            container.innerHTML = '';
+            container.innerHTML = "";
             container.appendChild(image);
         };
         img.src = url;
@@ -35,7 +35,18 @@ class Banner {
 }
 
 function getBannerContainer() {
-    return document.querySelector("#itemBanner");
+    // HTML body may contain more than one `itemDetailPage` Component
+    const detail_pages = [];
+    document.querySelectorAll("[id='itemDetailPage']").forEach((page) => {
+        if (!page.classList.contains("hide")) {
+            detail_pages.push(page);
+        }
+    });
+    if (0 === detail_pages.length) {
+        console.warn("Fail to get banner container");
+        return null;
+    }
+    return detail_pages.slice(-1)[0].querySelector("#itemBanner");
 }
 
 function setBannerImage(url) {
@@ -44,9 +55,13 @@ function setBannerImage(url) {
         global_status.currentBanner = null;
     }
 
-    const instance = new Banner();
-    instance.load(url, getBannerContainer());
-    global_status.currentBanner = instance;
+    const container = getBannerContainer();
+
+    if (container) {
+        const instance = new Banner();
+        instance.load(url, );
+        global_status.currentBanner = instance;
+    }
 }
 
 function getItemImageUrls(item, imageOptions) {
@@ -64,7 +79,7 @@ function getItemImageUrls(item, imageOptions) {
                     type: "Banner",
                     tag: banner_tag,
                     maxWidth: dom.getScreenWidth(),
-                    index: index,
+                    index: 0,
                 })
             )
         );
@@ -93,8 +108,10 @@ export function clearBanner() {
     }
 
     const elem = getBannerContainer();
-    elem.innerHTML = "";
-    elem.classList.add("hide");
+    if (elem) {
+        elem.innerHTML = "";
+        elem.classList.add("hide");
+    }
 }
 
 export default {
