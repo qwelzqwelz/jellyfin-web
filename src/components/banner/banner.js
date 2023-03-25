@@ -34,32 +34,25 @@ class Banner {
     }
 }
 
-function getBannerContainer() {
-    // HTML body may contain more than one `itemDetailPage` Component
-    const detail_pages = [];
-    document.querySelectorAll("[id='itemDetailPage']").forEach((page) => {
-        if (!page.classList.contains("hide")) {
-            detail_pages.push(page);
-        }
-    });
-    if (0 === detail_pages.length) {
-        console.warn("Fail to get banner container");
-        return null;
+function getBannerContainer(page) {
+    const result = page.querySelector("[id='itemBanner']");
+    if (!result) {
+        console.warn("Fail to get banner container, page=", page);
     }
-    return detail_pages.slice(-1)[0].querySelector("#itemBanner");
+    return result;
 }
 
-function setBannerImage(url) {
+function setBannerImage(page, url) {
     if (global_status.currentBanner) {
         global_status.currentBanner.destroy();
         global_status.currentBanner = null;
     }
 
-    const container = getBannerContainer();
+    const container = getBannerContainer(page);
 
     if (container) {
         const instance = new Banner();
-        instance.load(url, );
+        instance.load(url, container);
         global_status.currentBanner = instance;
     }
 }
@@ -88,26 +81,26 @@ function getItemImageUrls(item, imageOptions) {
     return result;
 }
 
-export function setBanner(item_or_url, imageOptions) {
+export function setBanner(page, item_or_url, imageOptions) {
     let url = item_or_url;
     if (url && typeof url !== "string") {
         url = getItemImageUrls(item_or_url, imageOptions)[0];
     }
 
     if (url) {
-        setBannerImage(url);
+        setBannerImage(page, url);
     } else {
-        clearBanner();
+        clearBanner(page);
     }
 }
 
-export function clearBanner() {
+export function clearBanner(page) {
     if (global_status.currentBanner) {
         global_status.currentBanner.destroy();
         global_status.currentBanner = null;
     }
 
-    const elem = getBannerContainer();
+    const elem = getBannerContainer(page);
     if (elem) {
         elem.innerHTML = "";
         elem.classList.add("hide");

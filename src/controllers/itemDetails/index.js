@@ -517,12 +517,12 @@ function renderBackdrop(item) {
     }
 }
 
-function renderBanner(item) {
+function renderBanner(page, item) {
     // Details banner is disabled in user settings
     if (!userSettings.detailsBanner()) {
         return false;
     }
-    banner.setBanner(item);
+    banner.setBanner(page, item);
 }
 
 function renderDetailPageBackdrop(page, item, apiClient) {
@@ -582,7 +582,7 @@ function reloadFromItem(instance, page, params, item, user) {
     }
 
     renderBackdrop(item);
-    renderBanner(item);
+    renderBanner(page, item);
 
     // Render the main information for the item
     page.querySelector('.detailPagePrimaryContainer').classList.add('detailRibbon');
@@ -2056,7 +2056,7 @@ export default function (view, params) {
                     appRouter.setTitle('');
                     renderTrackSelections(page, self, currentItem, true);
                     renderBackdrop(currentItem);
-                    renderBanner(currentItem);
+                    renderBanner(view, currentItem);
                 }
             } else {
                 reload(self, page, params);
