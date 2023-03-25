@@ -11,6 +11,7 @@ import cardBuilder from '../../components/cardbuilder/cardBuilder';
 import datetime from '../../scripts/datetime';
 import mediaInfo from '../../components/mediainfo/mediainfo';
 import backdrop from '../../components/backdrop/backdrop';
+import banner from '../../components/banner/banner';
 import listView from '../../components/listview/listview';
 import itemContextMenu from '../../components/itemContextMenu';
 import itemHelper from '../../components/itemHelper';
@@ -516,14 +517,17 @@ function renderBackdrop(item) {
     }
 }
 
-function renderDetailPageBackdrop(page, item, apiClient) {
+function renderBanner(item) {
     // Details banner is disabled in user settings
     if (!userSettings.detailsBanner()) {
         return false;
     }
+    banner.setBanner(item);
+}
 
-    // Disable item backdrop for books and people because they only have primary images
-    if (item.Type === 'Person' || item.Type === 'Book') {
+function renderDetailPageBackdrop(page, item, apiClient) {
+    // Details banner is disabled in user settings
+    if (!userSettings.detailsBanner()) {
         return false;
     }
 
@@ -578,6 +582,7 @@ function reloadFromItem(instance, page, params, item, user) {
     }
 
     renderBackdrop(item);
+    renderBanner(item);
 
     // Render the main information for the item
     page.querySelector('.detailPagePrimaryContainer').classList.add('detailRibbon');

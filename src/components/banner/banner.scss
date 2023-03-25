@@ -1,0 +1,11 @@
+.bannerImage {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.bannerImage > img {
+    opacity: 0;
+    max-width: 100%;
+    max-height: 400px;
+}
