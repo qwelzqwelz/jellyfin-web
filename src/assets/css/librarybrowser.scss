@@ -1272,6 +1272,14 @@ div:not(.sectionTitleContainer-cards) > .sectionTitle-cards {
     justify-content: flex-end;
 }
 
+p.overview {
+    white-space: pre;
+}
+
+p.overview.html-overview {
+    white-space: normal;
+}
+
 .detail-clamp-text {
     overflow: hidden;
     display: -webkit-box;

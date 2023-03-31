@@ -906,12 +906,28 @@ function renderOverview(page, item) {
     const overviewElements = page.querySelectorAll('.overview');
 
     if (overviewElements.length > 0) {
-        const overview = DOMPurify.sanitize(item.Overview || '');
+        const raw_overview = item.Overview || '',
+            html_prefix = "[html-overview]\n";
+
+        // html overview
+        let overview, is_html_overview = false;
+        if (raw_overview.indexOf(html_prefix) !== 0) {
+            overview = DOMPurify.sanitize(raw_overview);
+        } else {
+            is_html_overview = true;
+            overview = raw_overview.substring(html_prefix.length);
+        }
 
         if (overview) {
             for (const overviewElemnt of overviewElements) {
                 overviewElemnt.innerHTML = overview;
                 overviewElemnt.classList.remove('hide');
+
+                if(is_html_overview) {
+                    overviewElemnt.classList.add("html-overview");
+                    continue;
+                }
+
                 overviewElemnt.classList.add('detail-clamp-text');
 
                 // Grab the sibling element to control the expand state

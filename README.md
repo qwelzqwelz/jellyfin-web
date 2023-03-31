@@ -41,32 +41,52 @@ Jellyfin Web is the frontend used for most of the clients available for end user
 
 ### Dependencies
 
-- [Node.js](https://nodejs.org/en/download)
-- npm (included in Node.js)
+* [Node.js](https://nodejs.org/en/download)
+* npm (included in Node.js)
 
 ### Getting Started
 
 1. Clone or download this repository.
 
-   ```sh
+```shell
    git clone https://github.com/jellyfin/jellyfin-web.git
    cd jellyfin-web
-   ```
+```
 
 2. Install build dependencies in the project directory.
 
-   ```sh
+```shell
    npm install
-   ```
+```
 
 3. Run the web client with webpack for local development.
 
-   ```sh
+```shell
    npm start
-   ```
+```
 
 4. Build the client with sourcemaps available.
 
-   ```sh
+```shell
    npm run build:development
-   ```
+```
+
+# Disable Auto TMDB Actor Scraper
+
+> https://github.com/jellyfin/jellyfin/issues/4352#issuecomment-1221231487
+
+Add the following config to `config/system.xml` (for example, on Windows, `C:\ProgramData\Jellyfin\Server\config\system.xml` )
+
+```xml
+    <MetadataOptions>
+      <ItemType>Person</ItemType>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers>
+        <string>TheMovieDb</string>
+      </DisabledMetadataFetchers>
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
+    </MetadataOptions>
+```
