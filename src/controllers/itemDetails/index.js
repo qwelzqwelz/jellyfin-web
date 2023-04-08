@@ -22,6 +22,7 @@ import globalize from '../../scripts/globalize';
 import browser from '../../scripts/browser';
 import { playbackManager } from '../../components/playback/playbackmanager';
 import '../../assets/css/scrollstyles.scss';
+import '../../assets/css/item-index.scss';
 import '../../elements/emby-itemscontainer/emby-itemscontainer';
 import '../../elements/emby-checkbox/emby-checkbox';
 import '../../elements/emby-button/emby-button';
@@ -902,22 +903,50 @@ function toggleLineClamp(clampTarget, e) {
     }
 }
 
+function build_rich_overview(raw_overview) {
+    const html_prefix = "[html-overview]\n";
+    let overview,
+        js_script = null,
+        is_html_overview = false;
+
+    if (raw_overview.indexOf(html_prefix) !== 0) {
+        overview = DOMPurify.sanitize(raw_overview);
+    } else {
+        is_html_overview = true;
+        const overview_lines = raw_overview.substring(html_prefix.length).split("\n");
+
+        // split HTML and Javascript
+        const html_lines = [],
+            script_lines = [];
+        let is_script = false;
+        for (let i = 0; i < overview_lines.length; ++i) {
+            const line = overview_lines[i];
+            if (line.trim() === "<script>") {
+                is_script = true;
+            } else if (line.trim() === "</script>") {
+                is_script = false;
+            } else if (is_script) {
+                script_lines.push(line);
+            } else {
+                html_lines.push(line);
+            }
+        }
+        js_script = script_lines.join("\n").trim();
+        overview = html_lines.join("\n");
+    }
+
+    return [is_html_overview, js_script, overview];
+}
+
 function renderOverview(page, item) {
     const overviewElements = page.querySelectorAll('.overview');
 
     if (overviewElements.length > 0) {
-        const raw_overview = item.Overview || '',
-            html_prefix = "[html-overview]\n";
-
         // html overview
-        let overview, is_html_overview = false;
-        if (raw_overview.indexOf(html_prefix) !== 0) {
-            overview = DOMPurify.sanitize(raw_overview);
-        } else {
-            is_html_overview = true;
-            overview = raw_overview.substring(html_prefix.length);
-        }
-
+        let [is_html_overview, js_script, overview] = build_rich_overview(
+            item.Overview || ""
+        );
+        
         if (overview) {
             for (const overviewElemnt of overviewElements) {
                 overviewElemnt.innerHTML = overview;
@@ -952,6 +981,12 @@ function renderOverview(page, item) {
                 overviewElemnt.innerHTML = '';
                 overviewElemnt.classList.add('hide');
             }
+        }
+
+        if (js_script) {
+            const script = document.createElement("script");
+            script.innerHTML = js_script;
+            document.body.appendChild(script);
         }
     }
 }
