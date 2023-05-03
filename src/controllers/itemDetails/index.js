@@ -828,6 +828,7 @@ function renderNextUp(page, item, user) {
             items: result.Items,
             shape: 'overflowBackdrop',
             showTitle: true,
+            preferThumb: true,
             displayAsSpecial: item.Type == 'Season' && item.IndexNumber,
             overlayText: false,
             centerText: true,

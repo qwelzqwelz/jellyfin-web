@@ -514,6 +514,9 @@ import ServerConnections from '../ServerConnections';
             if (options.preferThumb && item.ImageTags && item.ImageTags.Thumb) {
                 imgType = 'Thumb';
                 imgTag = item.ImageTags.Thumb;
+            } else if (options.preferThumb && item.ImageBlurHashes && Object.keys(item.ImageBlurHashes.Backdrop || {}).length) {
+                imgType = 'Backdrop';
+                imgTag = Object.keys(item.ImageBlurHashes.Backdrop)[0];
             } else if ((options.preferBanner || shape === 'banner') && item.ImageTags && item.ImageTags.Banner) {
                 imgType = 'Banner';
                 imgTag = item.ImageTags.Banner;

@@ -81,24 +81,36 @@ import ServerConnections from '../ServerConnections';
         const apiClient = ServerConnections.getApiClient(item.ServerId);
         let itemId;
 
+        // backdrop
         const options = {
             fillWidth: size,
             fillHeight: size,
-            type: 'Primary'
+            type: "Backdrop",
         };
+        if (item.ImageBlurHashes && item.ImageBlurHashes.Backdrop) {
+            const item_id_list = Object.keys(item.ImageBlurHashes.Backdrop);
+            if (item_id_list.length > 0) {
+                options.tag = item_id_list[0];
+                itemId = item.Id;
+            }
+        }
 
-        if (item.ImageTags && item.ImageTags.Primary) {
-            options.tag = item.ImageTags.Primary;
-            itemId = item.Id;
-        } else if (item.AlbumId && item.AlbumPrimaryImageTag) {
-            options.tag = item.AlbumPrimaryImageTag;
-            itemId = item.AlbumId;
-        } else if (item.SeriesId && item.SeriesPrimaryImageTag) {
-            options.tag = item.SeriesPrimaryImageTag;
-            itemId = item.SeriesId;
-        } else if (item.ParentPrimaryImageTag) {
-            options.tag = item.ParentPrimaryImageTag;
-            itemId = item.ParentPrimaryImageItemId;
+        // primary
+        if (!itemId) {
+            options.type = "Primary";
+            if (item.ImageTags && item.ImageTags.Primary) {
+                options.tag = item.ImageTags.Primary;
+                itemId = item.Id;
+            } else if (item.AlbumId && item.AlbumPrimaryImageTag) {
+                options.tag = item.AlbumPrimaryImageTag;
+                itemId = item.AlbumId;
+            } else if (item.SeriesId && item.SeriesPrimaryImageTag) {
+                options.tag = item.SeriesPrimaryImageTag;
+                itemId = item.SeriesId;
+            } else if (item.ParentPrimaryImageTag) {
+                options.tag = item.ParentPrimaryImageTag;
+                itemId = item.ParentPrimaryImageItemId;
+            }
         }
 
         if (itemId) {
